@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   dummy_functions.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/13 10:00:59 by ayassin           #+#    #+#             */
-/*   Updated: 2022/04/18 09:29:46 by ayassin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "fdf.h"
 
 void	put_ellipse(t_img *img, int width, int hight)
@@ -107,8 +95,8 @@ void	put_border(t_img *img)
 	j = 0;
 	while (i < img->width)
 	{
-		pixel_put(img, i , 0, color);
-		pixel_put(img, i , (img->hight) - 1, color);
+		pixel_put(img, i, 0, color);
+		pixel_put(img, i, (img->hight) - 1, color);
 		i++;
 	}
 	while (j < img->hight)
@@ -134,10 +122,10 @@ void	print_grid(t_list *grid)
 		templ = line;
 		while (line)
 		{
-			// printf("%d,%x ", ((t_point *)(line->content))->z,
-			// 	((t_point *)(line->content))->color);
-			printf("%d,%d ", ((t_point *)(line->content))->x_index,
-				((t_point *)(line->content))->y_index);
+			printf("%d,%x ", ((t_pnt *)(line->content))->z,
+			 	((t_pnt *)(line->content))->color);
+			// printf("%d,%d ", ((t_pnt *)(line->content))->x_index,
+			// 	((t_pnt *)(line->content))->y_index);
 			line = line->next;
 		}
 		ft_lstclear(&templ, free);
@@ -150,6 +138,25 @@ void	print_grid(t_list *grid)
 		templ = tempg -> next;
 		free(tempg);
 		tempg = templ;
+	}
+}
+
+void	print_spc(float ***grid, int width, int hight)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < hight)
+	{
+		j = 0;
+		while (j < width)
+		{
+			printf("%.2f\t", (*grid)[i][j]);
+			++j;
+		}
+		printf("\n");
+		++i;
 	}
 }
 
@@ -184,7 +191,7 @@ int	main2(void)
 }
 
 
-void	dummy_draw_lines_helper(t_point *point0, t_point *point1, t_img *img)
+void	dummy_draw_lines_helper(t_pnt *point0, t_pnt *point1, t_img *img)
 {
 	double	dxy[2];
 	double	sxy[2];
@@ -238,3 +245,80 @@ void	dummy_draw_lines_helper(t_point *point0, t_point *point1, t_img *img)
 		}
 	}
 }
+
+// void	draw_points_backup(t_list *grid, t_img *img)
+// {
+// 	int		x_strpt;
+// 	int		y_strpt;
+// 	int		div;
+// 	t_list	*point;
+// 	int		x_index;
+// 	int		y_index;
+// 	int		tempz;
+
+// 	x_strpt = (img->width) / 2;
+// 	y_strpt = (img->hight) / 2;
+// 	div = (img->width) / 2 / ft_lstsize(grid->content);
+// 	if (div > (img->hight) / 2 / ft_lstsize(grid))
+// 		div = (img->hight) / 2 / ft_lstsize(grid);
+// 	y_index = 0 - ft_lstsize(grid) / 2;
+// 	put_border(img);
+// 	while (grid)
+// 	{
+// 		point = grid->content;
+// 		x_index = 0 - ft_lstsize(point) / 2;
+// 		while (point)
+// 		{
+// 		// Normal Grid
+// 			// ((t_pnt *)(point->content))->x = (x_index * div + x_strpt);
+// 			// ((t_pnt *)(point->content))->y = y_index * div + y_strpt;	
+// 			//printf("x: %d, y = %d\n", ((t_pnt *)(point->content))->x, ((t_pnt *)(point->content))->y);
+
+// 		// rotate and translate without gamma vodo and with some fliped signs
+// 			// ((t_pnt *)(point->content))->y = ((y_index * div) * cos(img->gamma)
+// 			// 	- (x_index * div) * sin(img->gamma) * sin(img->beta)
+// 			// 	- ((t_pnt *)(point->content))->z * sin(img->gamma) * cos(img->beta) * div) + y_strpt;
+// 			// ((t_pnt *)(point->content))->x = ((x_index * div) * cos(img->beta)
+// 			// 	- ((t_pnt *)(point->content))->z * sin(img->beta) * div)  + x_strpt;
+
+// 		// rotate and translate without gamma vodo and with  other fliped signs
+// 			//((t_pnt *)(point->content))->x = x_index * div * cosf(img->alpha) + y_index * div * sinf(img->alpha);
+// 			//((t_pnt *)(point->content))->y = y_index * div * cosf(img->alpha) - x_index * div * sinf(img->alpha);
+// 			// ((t_pnt *)(point->content))->y = ((y_index * div) * cosf(img->gamma)
+// 			// 	- (x_index * div) * sinf(img->gamma) * sinf(img->beta)
+// 			// 	+ ((t_pnt *)(point->content))->z * sinf(img->gamma) * cosf(img->beta) * div) + y_strpt;
+// 			// ((t_pnt *)(point->content))->x = ((x_index * div) * cosf(img->beta)
+// 			// 	+ ((t_pnt *)(point->content))->z * sinf(img->beta) * div)  + x_strpt;
+
+// 		// rotate and translate one at a time
+// 		//Rz
+// 			((t_pnt *)(point->content))->x = x_index * div * cosf(img->alpha) + y_index * div * sinf(img->alpha);
+// 			((t_pnt *)(point->content))->y = y_index * div * cosf(img->alpha) - x_index * div * sinf(img->alpha);
+// 			// ((t_pnt *)(point->content))->x = x_index * div / ((((t_pnt *)(point->content))->z) + 1) * cosf(img->alpha) + y_index * div / ((((t_pnt *)(point->content))->z) + 1) * sinf(img->alpha);
+// 			// ((t_pnt *)(point->content))->y = y_index * div / ((((t_pnt *)(point->content))->z) + 1) * cosf(img->alpha) - x_index * div / ((((t_pnt *)(point->content))->z) + 1) * sinf(img->alpha);
+			
+// 		//Rx
+// 			tempz = ((t_pnt *)(point->content))->y * sin(img->gamma)
+// 				+ ((t_pnt *)(point->content))->z * cos(img->gamma) * div;
+// 			((t_pnt *)(point->content))->y = ((t_pnt *)(point->content))->y * cosf(img->gamma)
+// 				- ((t_pnt *)(point->content))->z * sinf(img->gamma) * div;
+			
+
+// 		//Ry
+// 			((t_pnt *)(point->content))->x = (((t_pnt *)(point->content))->x) * cosf(img->beta)
+// 				+ tempz * sinf(img->beta);
+
+// 		//trans
+// 			((t_pnt *)(point->content))->y += y_strpt;
+// 			((t_pnt *)(point->content))->x += x_strpt;
+					
+// 			//printf("This line %d row %d\n", ((t_pnt *)(point->content))->y, ((t_pnt *)(point->content))->x);
+// 			//put_ellipse2(img, ((t_pnt *)(point->content))->x, ((t_pnt *)(point->content))->y);
+// 			//pixel_put(img, ((t_pnt *)(point->content))->x, ((t_pnt *)(point->content))->y, ((t_pnt *)(point->content))->color);
+// 			++x_index;
+// 			point = point->next;
+// 		}
+// 		y_index++;
+// 		grid = grid->next;
+// 	}
+// }

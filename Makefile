@@ -6,7 +6,7 @@
 #    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/05 13:07:14 by ayassin           #+#    #+#              #
-#    Updated: 2022/04/17 14:14:29 by ayassin          ###   ########.fr        #
+#    Updated: 2022/04/27 13:41:43 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@ NAME = fdf
 
 HEADER = fdf.h
 
-SRC = fdf.c readmap.c get_next_line.c key_hook.c draw_grid.c dummy_functions.c
+SRC = fdf.c readmap.c get_next_line.c key_hook.c draw_grid.c clear.c \
+	wave.c wave2.c dummy_functions.c 
 
 SUBDIRS = libft_beta ft_printf_beta minilibx_macos
 

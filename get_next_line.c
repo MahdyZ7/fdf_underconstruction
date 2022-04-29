@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 08:50:48 by ayassin           #+#    #+#             */
-/*   Updated: 2022/04/08 11:49:54 by ayassin          ###   ########.fr       */
+/*   Updated: 2022/04/26 14:43:58 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	shiftleft(char *str, int index)
 
 /*Appends suffex string "sufstr" to the prefix string "prestr" 
 up until "sufstr" char 0 or new line. 
-Return 1 if sufstr has new lone, -1 if Memory allocation failed, 0 otherwise
+Return 1 if sufstr has new one, -1 if Memory allocation failed, 0 otherwise
 **malloc DANGER**/
 static int	ft_strjoingnl(char **prestr, char *sufstr)
 {

@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 11:51:03 by ayassin           #+#    #+#             */
-/*   Updated: 2022/04/18 15:21:26 by ayassin          ###   ########.fr       */
+/*   Updated: 2022/04/29 10:31:10 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,25 +27,28 @@ static void	trans(int key, t_scn *scn)
 		scn->img->x_pos, scn->img->y_pos);
 }
 
-static void	rotate(int key, t_scn *scn)
+void	rotate(int key, t_scn *scn)
 {
 	mlx_destroy_image(scn->mlx_ptr, scn->img->img_ptr);
-	scn->img->img_ptr = mlx_new_image(scn->mlx_ptr, scn->img->width, scn->img->hight);
-	scn->img->addr = mlx_get_data_addr(scn->img->img_ptr, &(scn->img->bits_per_pixel),
+	scn->img->img_ptr = mlx_new_image(scn->mlx_ptr, scn->img->width,
+			scn->img->hight);
+	scn->img->addr = mlx_get_data_addr(scn->img->img_ptr,
+			&(scn->img->bits_per_pixel),
 			&(scn->img->line_length), &(scn->img->endian));
 	if (key == 13)
-		scn->img->beta -= (M_PI_2 / 9.0);
+		scn->nums->beta -= (M_PI_2 / 9.0);
 	else if (key == 1)
-		scn->img->beta += M_PI_2 / 9.0;
+		scn->nums->beta += M_PI_2 / 9.0;
 	else if (key == 0)
-		scn->img->gamma -= M_PI_2 / 9.0;
+		scn->nums->gamma -= M_PI_2 / 9.0;
 	else if (key == 2)
-		scn->img->gamma += M_PI_2 / 9.0;
+		scn->nums->gamma += M_PI_2 / 9.0;
 	else if (key == 14)
-		scn->img->alpha -= M_PI_2 / 9.0;
+		scn->nums->alpha -= M_PI_2 / 9.0;
 	else if (key == 12)
-		scn->img->alpha += M_PI_2 / 9.0;
-	printf("gamma is %.20f,  beta is %.20f", scn->img->gamma*180/M_PI, scn->img->beta*180/M_PI);
+		scn->nums->alpha += M_PI_2 / 9.0;
+	//printf("gamma is %.20f,  beta is %.20f", scn->nums->gamma*180/M_PI, scn->nums->beta*180/M_PI);
+	setup_nums(scn->nums, scn->grid, scn->img);
 	draw_points(scn->grid, scn->img);
 	draw_line(scn->grid, scn->img);
 	mlx_clear_window(scn->mlx_ptr, scn->win_ptr);
@@ -55,24 +58,21 @@ static void	rotate(int key, t_scn *scn)
 
 static void	zoom(int key, t_scn *scn)
 {
+	int	offset;
+
+	offset = (key == 69) * 2 - 1;
+	scn->img->zoom += (key == 69) * 2 - 1;
+	scn->img->width = scn->img->b_width * scn->img->zoom / 10;
+	scn->img->hight = scn->img->b_hight * scn->img->zoom / 10;
+	scn->img->x_pos = scn->img->x_pos - 0.1 * offset / 2.0 * scn->img->b_width;
+	scn->img->y_pos = scn->img->y_pos - 0.1 * offset / 2.0 * scn->img->b_hight;
 	mlx_destroy_image(scn->mlx_ptr, scn->img->img_ptr);
-	if (key == 69)
-	{
-		scn->img->x_pos = scn->img->x_pos - 0.1 / 2.0 * scn->img->width;
-		scn->img->y_pos = scn->img->y_pos - 0.1 / 2.0 * scn->img->hight;
-		scn->img->width *= 1.1;
-		scn->img->hight *= 1.1;
-	}
-	else
-	{
-		scn->img->x_pos = scn->img->x_pos + 0.1 / 2.0  * scn->img->width;
-		scn->img->y_pos = scn->img->y_pos + 0.1 / 2.0 * scn->img->hight;
-		scn->img->width *= 0.9;
-		scn->img->hight *= 0.9;
-	}
-	scn->img->img_ptr = mlx_new_image(scn->mlx_ptr, scn->img->width, scn->img->hight);
-	scn->img->addr = mlx_get_data_addr(scn->img->img_ptr, &(scn->img->bits_per_pixel),
+	scn->img->img_ptr = mlx_new_image(scn->mlx_ptr, scn->img->width,
+			scn->img->hight);
+	scn->img->addr
+		= mlx_get_data_addr(scn->img->img_ptr, &(scn->img->bits_per_pixel),
 			&(scn->img->line_length), &(scn->img->endian));
+	setup_nums(scn->nums, scn->grid, scn->img);
 	draw_points(scn->grid, scn->img);
 	draw_line(scn->grid, scn->img);
 	mlx_clear_window(scn->mlx_ptr, scn->win_ptr);
@@ -80,24 +80,20 @@ static void	zoom(int key, t_scn *scn)
 		scn->img->x_pos, scn->img->y_pos);
 }
 
-int	x_press(t_scn *scn)
-{
-	clear_grid(scn->grid);
-	mlx_destroy_image(scn->mlx_ptr, scn->img->img_ptr);
-	mlx_destroy_window(scn->mlx_ptr, scn->win_ptr);
-	exit(0);
-}
-
 int	key_hook(int key, t_scn *scn)
 {
 	if (key >= 123 && key <= 126)
 		trans(key, scn);
-	if ((key >= 0 && key <= 3) || (key >= 12 && key <= 14))
+	else if ((key >= 0 && key <= 3) || (key >= 12 && key <= 14))
 		rotate(key, scn);
-	if (key == 69 || key == 78)
+	else if (key == 69 || key == 78)
 		zoom(key, scn);
-	if (key == 53)
+	else if (key == 53)
 		x_press(scn);
+	else if (key == 47)
+		nxt_step(scn);
+	else if (key == 43)
+		mlx_loop_hook(scn->mlx_ptr, nxt_step, scn);
 	printf(" The key num is %d\n", key);
 	return (0);
 }
